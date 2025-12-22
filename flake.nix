@@ -51,6 +51,7 @@
               };
             });
           };
+          verusfmt = pkgs.callPackage ./verusfmt.nix { };
         };
 
         formatter.${system} = formatter;
@@ -90,6 +91,7 @@
             rustup
             vargo
             verus
+            verusfmt
           ];
         };
       }
