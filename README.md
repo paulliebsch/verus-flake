@@ -12,6 +12,7 @@ as well as through a devshell `devShells.${system}.default`.
 - `vargo`: Verus's `cargo` wrapper.
 - `verus`: Verus build (`verus`, `rust_verify`, `cargo-verus`, `z3`).
 - [`verusfmt`](https://github.com/verus-lang/verusfmt): Verus's `rustfmt`.
+- `cvc5`: Alternative to `z3` (both are pinned to the right versions).
 
 Since we build our own Rust toolchain with
 [rust-overlay](https://github.com/oxalica/rust-overlay),

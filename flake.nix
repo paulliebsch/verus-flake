@@ -31,6 +31,19 @@
         linters = [ pkgs.statix ];
         # https://github.com/verus-lang/verus/blob/main/rust-toolchain.toml
         rust-bin = pkgs.rust-bin.fromRustupToolchainFile ./rust-toolchain.toml;
+        cvc5' = pkgs.cvc5.override {
+          cadical = pkgs.cadical.override { version = "2.0.0"; };
+        };
+        # https://github.com/verus-lang/verus/blob/main/tools/common/consts.rs
+        cvc5 = cvc5'.overrideAttrs (finalAttrs: previousAttrs: {
+          version = "1.1.2";
+          src = pkgs.fetchFromGitHub {
+            owner = "cvc5";
+            repo = "cvc5";
+            tag = "cvc5-${finalAttrs.version}";
+            hash = "sha256-v+3/2IUslQOySxFDYgTBWJIDnyjbU2RPdpfLcIkEtgQ=";
+          };
+        });
       in
       {
         packages.${system} = rec {
@@ -92,6 +105,7 @@
             vargo
             verus
             verusfmt
+            cvc5
           ];
         };
       }
