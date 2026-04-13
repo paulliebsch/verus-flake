@@ -1,19 +1,20 @@
-{ lib
-, rustPlatform
-, fetchFromGitHub
-, makeBinaryWrapper
-, rust-bin
-, rustup
-, z3
+{
+  lib,
+  rustPlatform,
+  fetchFromGitHub,
+  makeBinaryWrapper,
+  rust-bin,
+  rustup,
+  z3,
 }:
 
 let
-  version = "0.2025.12.19.bd99e83";
   src = fetchFromGitHub {
     owner = "verus-lang";
     repo = "verus";
-    tag = "release/${version}";
-    hash = "sha256-6YGLQ/AxbtrQAJm9jsYGKHjCdh6gs/4gIM2Q+0abOjg=";
+    rev = "150498b14e93093572997366ef2606511dee2715";
+    # tag = "release/${version}";
+    hash = "sha256-a+LCUW8MIWXi2A7i6eEYVUPuLhD0Z8EchMxWUGN3vUI=";
   };
   vargo = rustPlatform.buildRustPackage (finalAttrs: {
     pname = "vargo";
@@ -23,7 +24,9 @@ let
 
     cargoHash = "sha256-0WJEW3FtoWxMaedqBoCmaS0HLsLjxtBlBClAXcjf/6s=";
 
-    meta = meta // { mainProgram = "vargo"; };
+    meta = meta // {
+      mainProgram = "vargo";
+    };
   });
   meta = {
     homepage = "https://github.com/verus-lang/verus";
@@ -46,9 +49,18 @@ rustPlatform.buildRustPackage {
 
   cargoHash = "sha256-OTPCMsgwhRK7LKuO5R2c5wY+T00g1/50tK6ImZ7Y/yw=";
 
-  nativeBuildInputs = [ makeBinaryWrapper rust-bin rustup vargo z3 ];
+  nativeBuildInputs = [
+    makeBinaryWrapper
+    rust-bin
+    rustup
+    vargo
+    z3
+  ];
 
-  buildInputs = [ rustup z3 ];
+  buildInputs = [
+    rustup
+    z3
+  ];
 
   buildPhase = ''
     runHook preBuild
@@ -81,5 +93,7 @@ rustPlatform.buildRustPackage {
 
   passthru = { inherit vargo; };
 
-  meta = meta // { mainProgram = "verus"; };
+  meta = meta // {
+    mainProgram = "verus";
+  };
 }
