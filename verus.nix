@@ -9,6 +9,7 @@
 }:
 
 let
+  version = "#2048";
   src = fetchFromGitHub {
     owner = "verus-lang";
     repo = "verus";
