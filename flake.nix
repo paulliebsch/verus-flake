@@ -2,14 +2,19 @@
   description = "Flake for verus";
 
   inputs = {
-    nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
+    nixpkgs.url = "github:nixos/nixpkgs/25.11";
     rust-overlay = {
       url = "github:oxalica/rust-overlay";
       inputs.nixpkgs.follows = "nixpkgs";
     };
   };
 
-  outputs = { self, nixpkgs, rust-overlay }:
+  outputs =
+    {
+      self,
+      nixpkgs,
+      rust-overlay,
+    }:
     let
       inherit (nixpkgs) lib;
       systems = [
@@ -18,10 +23,10 @@
         "aarch64-darwin"
         "x86_64-windows"
       ];
-      eachDefaultSystem = f: builtins.foldl' lib.attrsets.recursiveUpdate { }
-        (map f systems);
+      eachDefaultSystem = f: builtins.foldl' lib.attrsets.recursiveUpdate { } (map f systems);
     in
-    eachDefaultSystem (system:
+    eachDefaultSystem (
+      system:
       let
         overlays = [ (import rust-overlay) ];
         pkgs = import nixpkgs {
@@ -35,15 +40,17 @@
           cadical = pkgs.cadical.override { version = "2.0.0"; };
         };
         # https://github.com/verus-lang/verus/blob/main/tools/common/consts.rs
-        cvc5 = cvc5'.overrideAttrs (finalAttrs: previousAttrs: {
-          version = "1.1.2";
-          src = pkgs.fetchFromGitHub {
-            owner = "cvc5";
-            repo = "cvc5";
-            tag = "cvc5-${finalAttrs.version}";
-            hash = "sha256-v+3/2IUslQOySxFDYgTBWJIDnyjbU2RPdpfLcIkEtgQ=";
-          };
-        });
+        cvc5 = cvc5'.overrideAttrs (
+          finalAttrs: previousAttrs: {
+            version = "1.1.2";
+            src = pkgs.fetchFromGitHub {
+              owner = "cvc5";
+              repo = "cvc5";
+              tag = "cvc5-${finalAttrs.version}";
+              hash = "sha256-v+3/2IUslQOySxFDYgTBWJIDnyjbU2RPdpfLcIkEtgQ=";
+            };
+          }
+        );
       in
       {
         packages.${system} = rec {
@@ -53,16 +60,18 @@
           inherit (verus.passthru) vargo;
           verus = pkgs.callPackage ./verus.nix {
             inherit rust-bin rustup;
-            z3 = pkgs.z3.overrideAttrs (finalAttrs: previousAttrs: {
-              # https://github.com/verus-lang/verus/blob/main/tools/common/consts.rs
-              version = "4.12.5";
-              src = pkgs.fetchFromGitHub {
-                owner = "Z3Prover";
-                repo = "z3";
-                tag = "z3-${finalAttrs.version}";
-                sha256 = "sha256-Qj9w5s02OSMQ2qA7HG7xNqQGaUacA1d4zbOHynq5k+A=";
-              };
-            });
+            z3 = pkgs.z3.overrideAttrs (
+              finalAttrs: previousAttrs: {
+                # https://github.com/verus-lang/verus/blob/main/tools/common/consts.rs
+                version = "4.12.5";
+                src = pkgs.fetchFromGitHub {
+                  owner = "Z3Prover";
+                  repo = "z3";
+                  tag = "z3-${finalAttrs.version}";
+                  sha256 = "sha256-Qj9w5s02OSMQ2qA7HG7xNqQGaUacA1d4zbOHynq5k+A=";
+                };
+              }
+            );
           };
           verusfmt = pkgs.callPackage ./verusfmt.nix { };
         };
@@ -84,30 +93,34 @@
         apps.${system} = {
           update = {
             type = "app";
-            program = lib.getExe (pkgs.writeShellApplication {
-              name = "update";
-              runtimeInputs = [ pkgs.nix-update ];
-              text = lib.concatMapStringsSep "\n"
-                (package: "nix-update --flake ${package} || true")
-                (builtins.attrNames self.packages.${system});
-            });
+            program = lib.getExe (
+              pkgs.writeShellApplication {
+                name = "update";
+                runtimeInputs = [ pkgs.nix-update ];
+                text = lib.concatMapStringsSep "\n" (package: "nix-update --flake ${package} || true") (
+                  builtins.attrNames self.packages.${system}
+                );
+              }
+            );
           };
         };
 
-        devShells.${system}.default = (pkgs.mkShellNoCC.override {
-          stdenv = pkgs.stdenvNoCC.override {
-            initialPath = [ pkgs.coreutils ];
-          };
-        }) {
-          packages = with self.packages.${system}; [
-            rust-bin
-            rustup
-            vargo
-            verus
-            verusfmt
-            cvc5
-          ];
-        };
+        devShells.${system}.default =
+          (pkgs.mkShellNoCC.override {
+            stdenv = pkgs.stdenvNoCC.override {
+              initialPath = [ pkgs.coreutils ];
+            };
+          })
+            {
+              packages = with self.packages.${system}; [
+                rust-bin
+                rustup
+                vargo
+                verus
+                verusfmt
+                cvc5
+              ];
+            };
       }
     );
 }
