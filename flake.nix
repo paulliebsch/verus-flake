@@ -2,7 +2,7 @@
   description = "Flake for verus";
 
   inputs = {
-    nixpkgs.url = "github:nixos/nixpkgs/25.11";
+    nixpkgs.url = "github:nixos/nixpkgs/687f05a9184cad4eaf905c48b63649e3a86f5433";
     rust-overlay = {
       url = "github:oxalica/rust-overlay";
       inputs.nixpkgs.follows = "nixpkgs";
