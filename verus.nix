@@ -9,12 +9,12 @@
 }:
 
 let
-  version = "0.2026.05.03.8b81855";
+  version = "0.2026.05.17.e479cce";
   src = fetchFromGitHub {
     owner = "verus-lang";
     repo = "verus";
     tag = "release/${version}";
-    hash = "sha256-ozA8fsMrZJqvqQZJ6P7RmEh9z/W0ktdq1QudWMLsMuI=";
+    hash = "sha256-fAaGpBTjq9IwENytGe+cPk9AN7GvKdgRBCVcJkaBeeA=";
   };
   vargo = rustPlatform.buildRustPackage (finalAttrs: {
     pname = "vargo";
@@ -47,7 +47,7 @@ rustPlatform.buildRustPackage {
 
   sourceRoot = "source/source";
 
-  cargoHash = "sha256-/u2AJxQjKQcGCPzP41lMpXqHXkuXnTc/EYNGSkaqew0=";
+  cargoHash = "sha256-xqgH4WBMgN3dfXhANBnomF2Y1o3bhPrxf5MKncJ0Hhs=";
 
   nativeBuildInputs = [
     makeBinaryWrapper
