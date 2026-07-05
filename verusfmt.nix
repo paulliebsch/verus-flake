@@ -1,24 +1,28 @@
-{ lib
-, rustPlatform
-, fetchFromGitHub
-, cargo
-, rustfmt
+{
+  lib,
+  rustPlatform,
+  fetchFromGitHub,
+  cargo,
+  rustfmt,
 }:
 
 rustPlatform.buildRustPackage (finalAttrs: {
   pname = "verusfmt";
-  version = "0.6.1";
+  version = "0.7.0";
 
   src = fetchFromGitHub {
     owner = "verus-lang";
     repo = "verusfmt";
     tag = "v${finalAttrs.version}";
-    hash = "sha256-+NHI2dvCxEGVIUF9zO2aVvVbPSLRtsHFCIHU4cfRzUY=";
+    hash = "sha256-H9vD67Jrxrt515Wjd696Aoqc1n5LuxCaSxIXX9dNEZw=";
   };
 
-  cargoHash = "sha256-8r8PzBrYZWibeFDh2nENctEEkigUzQeD9uD0Jl/Nv5U=";
+  cargoHash = "sha256-d13J2xhPDbHH2qyqx/Lnv925bwlqRTUSjqnH5BU7BxE=";
 
-  nativeCheckInputs = [ cargo rustfmt ];
+  nativeCheckInputs = [
+    cargo
+    rustfmt
+  ];
 
   doCheck = true;
 
